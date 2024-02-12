@@ -6,14 +6,14 @@ import { getTasks,
        deleteTasks,
         updateTasks
     } from "../controllers/tasks.controller.js";
-
+ 
 const router = Router()
 
 router.get('/tasks', getTasks);
-router.get('/tasks/id', getTask);
+router.get('/tasks/:id', getTask);
 router.post('/tasks', createTask);
-router.delete('/tasks', deleteTasks);
-router.put('/tasks', updateTasks);
+router.delete('/tasks/:id', deleteTasks);
+router.put('/tasks/:id', updateTasks);
 
 
 export  default router

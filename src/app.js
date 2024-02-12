@@ -11,17 +11,15 @@ const app = express();
 app.use(cors({
     origin :'http://localhost:3000',
 }));
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser())
 
-app.get("/", (req, res) => {
-    const htmlResponse = "<html><head><title>API RESTful</title></head><body><h1>API RESTful</h1></body></html>";
-    res.send(htmlResponse);
-});
+
 app.use("/api",authRoutes);
 
-app.use("/api", taskRoutes)
+app.use("/api",taskRoutes)
 
 
 
