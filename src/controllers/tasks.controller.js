@@ -11,28 +11,34 @@ export const createTask = async (req, res) => {
         DescripcionProducto, Categoria} = req.body
         
     const newTask = new Task({
-        IdProducto, Imagen, CodigoBarras, NombreProducto,
-        PrecioMenudeo, PrecioMayoreo, CantidadMayoreo, Existencias,
-        DescripcionProducto, Categoria
+        IdProducto, Imagen,
+        CodigoBarras,
+        NombreProducto,
+        PrecioMenudeo,
+        PrecioMayoreo,
+        CantidadMayoreo,
+        Existencias,
+        DescripcionProducto, 
+        Categoria
     })
     const saveTask = await newTask.save()
     res.json(saveTask)
 };
 
 export const getTask = async (req, res) => {
-    const task = await Task.findById(re.params.id)
+    const task = await Task.findById(req.params.id);
     if(!task) return res.status(404).json({message: "producto no encontrado"})
     res.json(task)
 };
 
-export const updateTasks = async (req, res) => {
-    const task = await Task.findByIdAndDelete(re.params.id)
+export const deleteTasks  = async (req, res) => {
+    const task = await Task.findByIdAndDelete(req.params.id)
     if(!task) return res.status(404).json({message: "producto no eliminado"})
     res.json(task)
 };
 
-export const deleteTasks = async (req, res) => {
-    const task = await Task.findByIdAndUpdate(re.params.id, req.body, {
+export const updateTasks = async (req, res) => {
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
         new: true
     })
     if(!task) return res.status(404).json({message: "producto no actualizado"})
