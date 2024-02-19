@@ -120,7 +120,7 @@ export const forgotPassword = async (req, res, next) =>{
         });
 
         // Configurar el enlace de restablecimiento de contraseña
-        const resetLink = `http://localhost:3000/PasswordReset?token=${token}`;
+        const resetLink = `https://robopits.online/PasswordReset?token=${token}`;
 
         // Configurar el correo electrónico
         const mailOptions = {
