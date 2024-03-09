@@ -9,13 +9,16 @@ import categoriaRoutes from "./routes/categoria.routes.js";
 import productoRoutes from "./routes/producto.routes.js";
 import empleadosRoutes from './routes/empleados.routes.js'
 const app = express();
+app.get("/", (req, res) => {
+    res.send("<h1>Hola Mundo desde Express!</h1>");
+});
 
 app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
 });
 
 app.use(cors({
-    origin :'http://localhost:3000',
+    origin :'https://robopits.online',
 }));
 
 app.use(morgan('dev'));
