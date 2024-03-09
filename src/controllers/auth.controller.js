@@ -5,7 +5,6 @@ import nodemailer from 'nodemailer';
 import { createAccessToken } from '../libs/jwt.js'
 import { TOKEN_SECRET } from "../config.js";
 
-
 export const register = async (req, res) => {
     const {Nombre, Email, Password} = req.body
 
@@ -39,8 +38,7 @@ export const register = async (req, res) => {
         console.error('Error en la solicitud de registro:', error);
         res.status(500).json({ message: 'Error interno en el servidor' });
     }
-
-}
+};
 
 export const login = async (req, res) => {
     const {Email, Password} = req.body
