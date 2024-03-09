@@ -5,6 +5,7 @@ export const getTasks = async (req, res) => {
     res.json(tasks)
 };
 
+
 export const createTask = async (req, res) => {
     const {IdProducto, Imagen, CodigoBarras, NombreProducto,
         PrecioMenudeo, PrecioMayoreo, CantidadMayoreo, Existencias,

@@ -1,52 +1,55 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema(
+  {
     IdProducto: {
-        type: String,
+      type: String,
     },
     Imagen: {
-        type: String,
+      type: String,
     },
     CodigoBarras: {
-        type: Number,
+      type: Number,
     },
     NombreProducto: {
-        type: String,
+      type: String,
     },
     PrecioMenudeo: {
-        type: Number,
-        validate: {
-            validator: function (value) {
-                // Verifica si el valor es un número y tiene hasta 2 decimales
-                return /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
-            },
-            message: 'PrecioMenudeo debe ser un número con hasta 2 decimales.'
-        }
+      type: Number,
+      validate: {
+        validator: function (value) {
+          // Verifica si el valor es un número y tiene hasta 2 decimales
+          return /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+        },
+        message: "PrecioMenudeo debe ser un número con hasta 2 decimales.",
+      },
     },
     PrecioMayoreo: {
-        type: Number,
-        validate: {
-            validator: function (value) {
-                // Verifica si el valor es un número y tiene hasta 2 decimales
-                return /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
-            },
-            message: 'PrecioMenudeo debe ser un número con hasta 2 decimales.'
-        }
+      type: Number,
+      validate: {
+        validator: function (value) {
+          // Verifica si el valor es un número y tiene hasta 2 decimales
+          return /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+        },
+        message: "PrecioMenudeo debe ser un número con hasta 2 decimales.",
+      },
     },
     CantidadMayoreo: {
-        type: Number,
+      type: Number,
     },
     Existencias: {
-        type: Number,
+      type: Number,
     },
     DescripcionProducto: {
-        type: String,
+      type: String,
     },
     Categoria: {
-        type: String,
+      type: String,
     },
-},{
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export default mongoose.model("Task", taskSchema);
