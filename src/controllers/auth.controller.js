@@ -9,6 +9,10 @@ export const register = async (req, res) => {
     const {Nombre, Email, Password} = req.body
 
     try {
+
+        const userFound = await User.findOne({Email})
+        if(userFound) return res.status(400).json(["el correo ya esta en uso"])
+
         const passwordHash = await bcrypt.hash(Password, 10);
 
         const newUser = new User({
@@ -22,7 +26,6 @@ export const register = async (req, res) => {
 
         res.cookie('token', token);
         res.json({
-            message: 'Usuario registrado correctamente.',
             id: userSaved._id,
             Nombre: userSaved.Nombre,
             Email: userSaved.Email,
@@ -38,15 +41,17 @@ export const register = async (req, res) => {
         console.error('Error en la solicitud de registro:', error);
         res.status(500).json({ message: 'Error interno en el servidor' });
     }
-};
+
+}
 
 export const login = async (req, res) => {
     const {Email, Password} = req.body
+    
 
     try {
 
         const userFound = await User.findOne({Email})
-
+        
         if (!userFound) return res.status(400).json({message: "Usuario no encontrado"})
         
         const isMatch = await bcrypt.compare(Password, userFound.Password);
@@ -54,10 +59,11 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({message: "Contra incorrecta"})
 
         const token = await createAccessToken({id: userFound._id});
+        console.log(token)
 
         res.cookie('token', token);
+
         res.json({
-            message: 'Bienvenido a la nuestra pagina web',
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
@@ -90,8 +96,27 @@ export const profile = async (req, res) =>{
         createdAt: userFound.createdAt,
         updatedAt: userFound.updatedAt,
     })
+        res.send("holi profile")
+}
 
-    res.send("holi profile")
+export const verifyToken = async (req, res) =>{
+    const {token} = req.cookies
+
+    if(!token) return res.status(401).json({message:"no autorizado1"});
+
+    jwt.verify(token, TOKEN_SECRET, async (err, user) =>{
+        if(err) return res.status(401).json({message:"no autorizado2"});
+
+        const userFound =  await User.findById(user.id)
+        if(!userFound) res.status(401).json({message:"no autorizado3"})
+
+        return res.json({
+            id :userFound._id,
+            Nombre: userFound.Nombre,
+            Email: userFound.Email
+        });
+
+    })
 }
 
 export const forgotPassword = async (req, res, next) =>{
@@ -103,7 +128,6 @@ export const forgotPassword = async (req, res, next) =>{
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
-
         // Crear un token único con una expiración de 2 minutos
         const token = jwt.sign({ userId: user._id }, TOKEN_SECRET, { expiresIn: '2m' });
 
@@ -142,7 +166,6 @@ export const forgotPassword = async (req, res, next) =>{
 
 export const PasswordReset = async (req, res, next) =>{
     const { token, Password } = req.body;
-
     try {
         // Verificar el token
         const decoded = jwt.verify(token, TOKEN_SECRET);
@@ -174,3 +197,5 @@ export const PasswordReset = async (req, res, next) =>{
         res.status(500).json({ message: 'Error interno en el servidor.' });
     }
 };
+
+

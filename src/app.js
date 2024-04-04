@@ -13,12 +13,11 @@ app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
 });
 
-app.get("/", (req, res) => {
-    res.send("<h1>Hola Mundo desde Express!</h1>");
-});
+
 
 app.use(cors({
-    origin :'https://robopits.online',
+    origin :'http://localhost:3000',
+    credentials: true
 }));
 
 app.use(morgan('dev'));
