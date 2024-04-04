@@ -2,13 +2,17 @@ import Empleado from "../models/Empleado.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
-import { createAccessToken } from '../libs/jwt.js';
-import { TOKEN_SECRET } from "../config.js";
+import { createAccessAdmin } from "../libs/jwt2.js";
+import { ADMIN_SECRET } from "../config.js";
 
 export const registro = async (req, res) => {
   const { Nombre, Email, Password } = req.body;
 
   try {
+
+    const userFound = await Empleado.findOne({Email})
+        if(userFound) return res.status(400).json(["el correo ya esta en uso"])
+
     const passwordHash = await bcrypt.hash(Password, 10);
 
     const newEmpleado = new Empleado({
@@ -18,9 +22,9 @@ export const registro = async (req, res) => {
     });
 
     const empleadoSaved = await newEmpleado.save();
-    const token = await createAccessToken({ id: empleadoSaved._id });
+    const admin = await createAccessAdmin({ id: empleadoSaved._id });
 
-    res.cookie('token', token);
+    res.cookie('admin', admin);
     res.json({
       message: 'Empleado registrado correctamente.',
       id: empleadoSaved._id,
@@ -41,37 +45,53 @@ export const registro = async (req, res) => {
 };
 
 export const inicio = async (req, res) => {
-    const { Email, Password } = req.body
+  const {Email, Password} = req.body
 
-    try {
-        const empleadoFound = await Empleado.findOne({ Email });
+  try {
 
-        if (!empleadoFound) {
-            return res.status(400).json({ message: "Empleado no encontrado" });
-        }
+      const userFound = await Empleado.findOne({Email})
 
-        const isMatch = await bcrypt.compare(Password, empleadoFound.Password);
+      if (!userFound) return res.status(400).json({message: "Usuario no encontrado"})
+      
+      const isMatch = await bcrypt.compare(Password, userFound.Password);
 
-        if (!isMatch) {
-            return res.status(400).json({ message: "Contraseña incorrecta" });
-        }
+      if (!isMatch) return res.status(400).json({message: "Contra incorrecta"})
 
-        const token = await createAccessToken({ id: empleadoFound._id });
+      const admin = await createAccessAdmin({id: userFound._id});
+      console.log(admin);
 
-        // Imprimir el token en la consola del servidor
-        console.log('Token generado:', token);
+      res.cookie('admin', admin);
 
-        res.cookie('token', token);
-        res.json({
-            message: 'Bienvenido a nuestra página web',
-            id: empleadoFound._id,
-            Nombre: empleadoFound.Nombre,
-            Email: empleadoFound.Email,
-            createdAt: empleadoFound.createdAt,
-            updatedAt: empleadoFound.updatedAt,
-        });
+      res.json({
+          id: userFound._id,
+          Nombre: userFound.Nombre,
+          Email: userFound.Email,
+          createdAt: userFound.createdAt,
+          updatedAt: userFound.updatedAt,
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+      })
+
+  } catch (error) {
+      res.status(500).json({message: error.message})
+  }
 };
+
+export const verifyTokenEmpleado = async (req, res) =>{
+  const {admin} = req.cookies
+
+  if(!admin) return res.status(401).json({message:"no autorizado"});
+
+  jwt.verify(admin, ADMIN_SECRET, async (err, empleado) =>{
+      if(err) return res.status(401).json({message:"no autorizado"});
+
+      const userFound =  await Empleado.findById(empleado.id)
+      if(!userFound) res.status(401).json({message:"no autorizado"})
+
+      return res.json({
+          id :userFound._id,
+          Nombre: userFound.Nombre,
+          Email: userFound.Email
+      });
+
+  })
+}
