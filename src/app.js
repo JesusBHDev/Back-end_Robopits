@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 
 app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "https://www.robopits.online");
+  res.header("Access-Control-Allow-Origin", "https://www.robopits.online");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
