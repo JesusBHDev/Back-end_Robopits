@@ -21,7 +21,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(cors({
-    origin :'https://robopits.online',
+    origin :'https://www.robopits.online',
     credentials: true
 }));
 
