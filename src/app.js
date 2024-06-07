@@ -11,7 +11,7 @@ import CarRoutes from './routes/Car.routes.js';
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000', // Permitir solo solicitudes de este origen
+    origin: 'https://robopits.online', // Permitir solo solicitudes de este origen
     credentials: true, // Permitir credenciales (cookies, autorización HTTP, etc.)
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization'] // Cabeceras permitidas
