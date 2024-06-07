@@ -2,30 +2,26 @@ import Carro from '../models/Carro.model.js';
 import User from '../models/user.model.js';
 import Producto from '../models/Producto.model.js';
 
-// Función para agregar un producto al carrito
 export const agregarProductoAlCarrito = async (req, res) => {
   const { userId, productId, quantity } = req.body;
-  console.log('ID del usuario:', userId); // Log para verificar el ID del usuario
-  console.log('ID del producto:', productId); // Log para verificar el ID del producto
+  console.log('ID del usuario:', userId);
+  console.log('ID del producto:', productId);
 
   try {
-    // Verificar si el usuario existe
     const usuario = await User.findById(userId);
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-
-    // Verificar si el producto existe
     const producto = await Producto.findById(productId);
     if (!producto) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
-
-    // Verificar si el carrito del usuario ya existe
+    if (producto.Existencias < quantity) {
+      return res.status(400).json({ message: "No hay suficientes existencias del producto" });
+    }
     let carrito = await Carro.findOne({ userId: userId });
-    
+
     if (!carrito) {
-      // Crear un nuevo carrito si no existe
       carrito = new Carro({
         userId: userId,
         items: [],
@@ -35,7 +31,6 @@ export const agregarProductoAlCarrito = async (req, res) => {
 
     // Verificar si el producto ya está en el carrito
     const itemIndex = carrito.items.findIndex(item => item.productId.toString() === productId);
-
     if (itemIndex > -1) {
       // Si el producto ya está en el carrito, actualizar la cantidad
       carrito.items[itemIndex].quantity += quantity;
@@ -48,8 +43,9 @@ export const agregarProductoAlCarrito = async (req, res) => {
         price: producto.Precio,
       });
     }
-
-    // Guardar el carrito actualizado
+    // Actualizar las existencias del producto
+    producto.Existencias -= quantity;
+    await producto.save();
     await carrito.save();
 
     res.status(200).json({ message: "Producto agregado al carrito exitosamente", carrito });
