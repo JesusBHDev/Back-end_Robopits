@@ -1,4 +1,4 @@
-import {ref, getDownloadURL, uploadBytesResumable} from 'firebase/storage'
+import {ref, getDownloadURL, uploadBytesResumable, deleteObject, getStorage} from 'firebase/storage'
 import { storage } from '../src/config/firebase.js'
 import sharp from 'sharp'
 
@@ -24,3 +24,18 @@ export async function uploadFile(file){
 
     return{ref:fileRef, downloadURL: fileDownloadURL}
 }
+
+export async function deleteFile(fileUrl) {
+    // Obtener una referencia al archivo en Firebase Storage
+    const storage = getStorage();
+    const fileRef = ref(storage, fileUrl);
+  
+    try {
+      // Eliminar el archivo de Firebase Storage
+      await deleteObject(fileRef);
+      console.log(`Archivo ${fileUrl} eliminado correctamente.`);
+    } catch (error) {
+      console.error(`Error al eliminar el archivo ${fileUrl}:`, error);
+      throw error;
+    }
+  }
