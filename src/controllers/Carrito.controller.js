@@ -53,3 +53,28 @@ export const agregarProductoAlCarrito = async (req, res) => {
     res.status(500).json({ message: "Error al agregar el producto al carrito", error });
   }
 };
+
+
+export const obtenerCarrito = async (req, res) => {
+  const { userId } = req.params;
+  console.log('ID del usuario:', userId);
+
+  try {
+    // Verificar si el usuario existe
+    const usuario = await User.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Obtener el carrito del usuario
+    const carrito = await Carro.findOne({ userId: userId }).populate('items.productId');
+    if (!carrito) {
+      return res.status(404).json({ message: "Carrito no encontrado" });
+    }
+
+    res.status(200).json({ carrito });
+  } catch (error) {
+    console.error('Error al obtener el carrito:', error);
+    res.status(500).json({ message: "Error al obtener el carrito", error });
+  }
+};
