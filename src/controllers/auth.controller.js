@@ -1,13 +1,16 @@
 import User from '../models/user.model.js'
+import IniciosDeSesion from '../models/log1_auth.model.js'
+import ResetPass from '../models/log2_ResetPass.model.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import { createAccessToken } from '../libs/jwt.js'
 import { TOKEN_SECRET } from "../config.js";
+import dotenv from 'dotenv'
+
 
 export const register = async (req, res) => {
     const {Nombre, Email, Password} = req.body
-
     try {
 
         const userFound = await User.findOne({Email})
@@ -44,37 +47,49 @@ export const register = async (req, res) => {
     }
 
 }
-
 export const login = async (req, res) => {
-    const {Email, Password} = req.body
-    
-
+    const { Email, Password } = req.body;
     try {
+        const userFound = await User.findOne({ Email });
 
-        const userFound = await User.findOne({Email})
-        
-        if (!userFound) return res.status(400).json({message: "Usuario no encontrado"})
-        
+        if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" });
+
         const isMatch = await bcrypt.compare(Password, userFound.Password);
 
-        if (!isMatch) return res.status(400).json({message: "Contra incorrecta"})
+        if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
-        const token = await createAccessToken({id: userFound._id});
-        console.log(token)
+        const token = await createAccessToken({ id: userFound._id });
+        console.log(token);
+
+        const inicio = new IniciosDeSesion({
+            ip: req.ip,
+            usuario: {
+                id: userFound._id,
+                Nombre: userFound.Nombre,
+                Email: userFound.Email,
+                createdAt: userFound.createdAt,
+                updatedAt: userFound.updatedAt
+            },
+            motivo: "Inicio de sesion"
+        });
+
+        // Guarda el registro de inicio de sesión
+        await inicio.save();
 
         res.cookie('token', token);
 
-        res.json({
+        // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
+        res.status(200).json({
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
-
-        })
+            message: 'Inicio de sesión exitoso'
+        });
 
     } catch (error) {
-        res.status(500).json({message: error.message})
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -132,13 +147,14 @@ export const forgotPassword = async (req, res, next) =>{
         // Crear un token único con una expiración de 2 minutos
         const token = jwt.sign({ userId: user._id }, TOKEN_SECRET, { expiresIn: '2m' });
 
+        dotenv.config()
         // Configurar nodemailer para enviar el correo electrónico
         const transporter = nodemailer.createTransport({
             // Configura tu proveedor de correo electrónico aquí
             service: 'gmail',
             auth: {
-                user: 'monitorenergysmart@gmail.com',
-                pass: 'wytlimdspzeqtaev',
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
 
@@ -165,8 +181,10 @@ export const forgotPassword = async (req, res, next) =>{
 
 };
 
-export const PasswordReset = async (req, res, next) =>{
+
+export const PasswordReset = async (req, res, next) => {
     const { token, Password } = req.body;
+
     try {
         // Verificar el token
         const decoded = jwt.verify(token, TOKEN_SECRET);
@@ -182,10 +200,21 @@ export const PasswordReset = async (req, res, next) =>{
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
+        // Guardar la IP del cliente
+        const ip = req.ip;
+
         // Actualizar la contraseña con la nueva contraseña hasheada
         const PasswordHash = await bcrypt.hash(Password, 10);
         user.Password = PasswordHash;
         await user.save();
+
+        // Guardar el registro de restablecimiento de contraseña
+        const resetPass = new ResetPass({
+            ip: ip,
+            usuario: user._id,
+            motivo: 'Restablecimiento de contraseña exitoso'
+        });
+        await resetPass.save();
 
         res.status(200).json({ message: 'Contraseña restablecida exitosamente.' });
 

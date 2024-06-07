@@ -29,7 +29,6 @@ const productoSchema = new mongoose.Schema(
         Incluye:{
             type: String,
         }
-
     },
     {
         timestamps: true,
