@@ -2,32 +2,44 @@ import mongoose from "mongoose";
 
 const productoSchema = new mongoose.Schema(
     {
-        IdProducto:{
-            type: String 
-        },
-        Imagen:{
-            type: String 
-        },
-        NameProducto:{
+        IdProducto: {
             type: String,
+            required: true,
+            unique: true // Añadido unique para asegurar que el ID del producto sea único
         },
-        Precio:{
+        Imagen: {
+            type: String,
+            required: true // Añadido required para asegurar que la imagen del producto sea obligatoria
+        },
+        NameProducto: {
+            type: String,
+            required: true // Añadido required para asegurar que el nombre del producto sea obligatorio
+        },
+        Precio: {
             type: Number,
+            required: true, // Añadido required para asegurar que el precio del producto sea obligatorio
+            min: 0 // Añadido min para asegurar que el precio no sea negativo
         },
-        Categoria:{
+        Categoria: {
             type: String,
+            required: true // Añadido required para asegurar que la categoría del producto sea obligatoria
         },
-        Existencias:{
+        Existencias: {
             type: Number,
+            required: true, // Añadido required para asegurar que las existencias del producto sean obligatorias
+            min: 0 // Añadido min para asegurar que las existencias no sean negativas
         },
-        Descripcion:{
+        Descripcion: {
             type: String,
+            required: true // Añadido required para asegurar que la descripción del producto sea obligatoria
         },
-        Caracteristicas:{
+        Caracteristicas: {
             type: String,
+            required: true // Añadido required para asegurar que las características del producto sean obligatorias
         },
-        Incluye:{
+        Incluye: {
             type: String,
+            required: true // Añadido required para asegurar que el contenido incluido del producto sea obligatorio
         }
     },
     {

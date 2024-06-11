@@ -8,6 +8,8 @@ import categoriaRoutes from "./routes/categoria.routes.js";
 import productoRoutes from "./routes/producto.routes.js";
 import empleadosRoutes from './routes/empleados.routes.js';
 import CarRoutes from './routes/Car.routes.js';
+import PedidoRoutes from  './routes/pedido.routes.js';
+
 const app = express();
 
 app.use(cors({
@@ -29,5 +31,6 @@ app.use("/api", authRoutes);
 app.use("/api", empleadosRoutes);
 app.use("/api", categoriaRoutes);
 app.use("/api", productoRoutes);
-app.use("/api", CarRoutes)
+app.use("/api", CarRoutes);
+app.use("/api", PedidoRoutes);
 export default app;

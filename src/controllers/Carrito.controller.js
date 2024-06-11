@@ -35,18 +35,23 @@ export const agregarProductoAlCarrito = async (req, res) => {
       // Si el producto ya está en el carrito, actualizar la cantidad
       carrito.items[itemIndex].quantity += quantity;
       carrito.items[itemIndex].price = producto.Precio; // Actualizar el precio por si ha cambiado
+      carrito.items[itemIndex].image = producto.Imagen; // Actualizar la imagen por si ha cambiado
+      carrito.items[itemIndex].name = producto.NameProducto; // Actualizar el nombre por si ha cambiado
     } else {
       // Si el producto no está en el carrito, agregarlo
       carrito.items.push({
         productId: productId,
+        name: producto.NameProducto, // Agregar el nombre del producto
         quantity: quantity,
         price: producto.Precio,
+        image: producto.Imagen // Agregar la imagen del producto
       });
     }
     // Actualizar las existencias del producto
     producto.Existencias -= quantity;
     await producto.save();
     await carrito.save();
+    console.log(carrito)
 
     res.status(200).json({ message: "Producto agregado al carrito exitosamente", carrito });
   } catch (error) {
