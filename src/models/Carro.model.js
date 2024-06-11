@@ -15,6 +15,10 @@ const CartSchema = new Schema({
         ref: 'Producto',
         required: true
       },
+      name: {
+        type: String,
+        required: true
+      },
       quantity: {
         type: Number,
         required: true,
@@ -22,6 +26,10 @@ const CartSchema = new Schema({
       },
       price: {
         type: Number,
+        required: true
+      },
+      image: {
+        type: String,
         required: true
       }
     }
@@ -49,4 +57,3 @@ CartSchema.pre('save', function(next) {
 });
 
 export default mongoose.model('Cart', CartSchema);
-
