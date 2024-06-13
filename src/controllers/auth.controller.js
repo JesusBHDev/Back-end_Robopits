@@ -28,14 +28,7 @@ export const register = async (req, res) => {
         const token = await createAccessToken({id: userSaved._id});
 
         
-        res.cookie('token', token, {
-          httpOnly: true,
-          secure: true, // Usar solo si tu conexión es HTTPS
-          domain: ['https://www.robopits.online', 'https://robopits.online'],
-          path: '/',
-          maxAge: 1000 * 60 * 60 * 24 * 7 // Esto es para una semana
-        });
-
+        res.cookie('token', token);
 
         res.json({
             id: userSaved._id,
