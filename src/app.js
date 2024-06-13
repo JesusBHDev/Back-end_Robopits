@@ -16,7 +16,9 @@ app.use(cors({
     origin: ['https://www.robopits.online','https://robopits.online'],
     credentials: true, // Permitir credenciales (cookies, autorización HTTP, etc.)
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'] // Cabeceras permitidas
+    allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
 app.use(morgan('dev'));
