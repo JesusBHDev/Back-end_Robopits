@@ -59,15 +59,26 @@ export const login = async (req, res) => {
     try {
         const userFound = await User.findOne({ Email });
 
-        if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" });
+        if (!userFound) {
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        }
 
         const isMatch = await bcrypt.compare(Password, userFound.Password);
-
-        if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
+        if (!isMatch) {
+            return res.status(400).json({ message: "Contraseña incorrecta" });
+        }
 
         const token = await createAccessToken({ id: userFound._id });
-        console.log(token);
 
+        // Configuración de la cookie con opciones seguras
+        res.cookie('token', token, {
+            httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
+            secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
+            maxAge: 7 * 24 * 60 * 60 * 1000, // La cookie expira en 7 días
+            sameSite: 'strict' // La cookie no se envía con peticiones de origen cruzado
+        });
+
+        // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
             usuario: {
@@ -77,12 +88,8 @@ export const login = async (req, res) => {
                 createdAt: userFound.createdAt,
                 updatedAt: userFound.updatedAt
             },
-            motivo: "Inicio de sesion"
+            motivo: "Inicio de sesión"
         });
-        
-        res.cookie('token', token);
-
-        // Guarda el registro de inicio de sesión
         await inicio.save();
         
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
@@ -96,9 +103,11 @@ export const login = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error en login:', error);
+        res.status(500).json({ message: 'Error interno en el servidor' });
     }
 };
+
 
 export const logout = (req, res) =>{
     res.cookie('token', "",{
