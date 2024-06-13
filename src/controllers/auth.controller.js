@@ -82,7 +82,6 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // En producción debe ser true
             maxAge: 7 * 24 * 60 * 60 * 1000, // Expire en 7 días
-            sameSite: 'strict'
         });
 
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
