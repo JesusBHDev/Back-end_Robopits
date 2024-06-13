@@ -59,9 +59,11 @@ export const login = async (req, res) => {
 
         if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
-        const token = await createAccessToken({ id: userFound._id });
-        console.log(token);
-
+        // Generar el token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '7d' // El token expira en 7 días
+        });
+        
         const inicio = new IniciosDeSesion({
             ip: req.ip,
             usuario: {
@@ -74,11 +76,17 @@ export const login = async (req, res) => {
             motivo: "Inicio de sesion"
         });
 
+        // Enviar el token como una cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Enviar solo sobre HTTPS en producción
+            maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie expira en 7 días
+            sameSite: 'strict' // La cookie no se envía con solicitudes de origen cruzado
+        });
+
         // Guarda el registro de inicio de sesión
         await inicio.save();
-
-        res.cookie('token', token);
-
+        
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
             id: userFound._id,
