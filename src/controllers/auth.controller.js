@@ -74,7 +74,7 @@ export const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
             secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
-            maxAge: 7 * 24 * 60 * 60 * 1000, // La cookie expira en 7 días
+            maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
             sameSite: 'strict' // La cookie no se envía con peticiones de origen cruzado
         });
 
