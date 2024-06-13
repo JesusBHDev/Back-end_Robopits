@@ -79,16 +79,12 @@ export const login = async (req, res) => {
             },
             motivo: "Inicio de sesion"
         });
+        
+        res.cookie('token', token);
 
         // Guarda el registro de inicio de sesión
         await inicio.save();
         
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Enviar solo sobre HTTPS en producción
-            sameSite: 'strict' // La cookie no se envía con solicitudes de origen cruzado
-        });
-
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
             id: userFound._id,
