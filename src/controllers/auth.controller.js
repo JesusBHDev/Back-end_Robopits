@@ -59,8 +59,9 @@ export const login = async (req, res) => {
 
         if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
-        const token = await createAccessToken({ id: userFound._id });
-        console.log(token);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '7d' // Asegúrate de configurar tu clave secreta en las variables de entorno
+        });
 
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -77,7 +78,12 @@ export const login = async (req, res) => {
         // Guarda el registro de inicio de sesión
         await inicio.save();
 
-        res.cookie('token', token);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // En producción debe ser true
+            maxAge: 7 * 24 * 60 * 60 * 1000, // Expire en 7 días
+            sameSite: 'strict'
+        });
 
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
