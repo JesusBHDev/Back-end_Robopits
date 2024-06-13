@@ -12,7 +12,7 @@ router.post("/login", validateSchema(loginSchema), login);
 router.post("/logout", logout);
 router.get("/profile", authRequire, profile);
 
-router.get("/verifyToken", verifyToken);
+router.get("/verify", verifyToken);
 
 router.post("/forgotPassword", forgotPassword);
 router.post("/passwordReset", PasswordReset);
