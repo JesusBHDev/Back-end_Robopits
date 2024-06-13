@@ -12,9 +12,9 @@ router.post("/login", validateSchema(loginSchema), login);
 router.post("/logout", logout);
 router.get("/profile", authRequire, profile);
 
-router.get("/verify", verifyToken);
+router.get("/verifyToken", verifyToken);
 
-router.post("/forgorPassword", forgotPassword);
+router.post("/forgotPassword", forgotPassword);
 router.post("/passwordReset", PasswordReset);
 
 export default router
