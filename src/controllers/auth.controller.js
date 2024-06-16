@@ -131,25 +131,29 @@ export const profile = async (req, res) =>{
         res.send("holi profile")
 };
 
-export const verifyToken = async (req, res) =>{
-    const {token} = res.cookie
+export const verifyToken = async (req, res) => {
+    const { token } = req.cookies;
 
-    if(!token) return res.status(401).json({message:"no autorizado1"});
+    if (!token) return res.status(401).json({ message: "no hay token" });
 
-    jwt.verify(token, TOKEN_SECRET, async (err, user) =>{
-        if(err) return res.status(401).json({message:"no autorizado2"});
+    jwt.verify(token, TOKEN_SECRET, async (err, user) => {
+        if (err) return res.status(401).json({ message: "no autorizado2" });
 
-        const userFound =  await User.findById(user.id)
-        if(!userFound) res.status(401).json({message:"no autorizado3"});
+        try {
+            const userFound = await User.findById(user._id);
+            if (!userFound) return res.status(401).json({ message: "no autorizado3" });
 
-        return res.json({
-            id :userFound._id,
-            Nombre: userFound.Nombre,
-            Email: userFound.Email
-        });
-
-    })
+            return res.json({
+                id: userFound._id,
+                Nombre: userFound.Nombre,
+                Email: userFound.Email
+            });
+        } catch (error) {
+            return res.status(500).json({ message: "Error del servidor" });
+        }
+    });
 };
+
 
 export const forgotPassword = async (req, res, next) =>{
     const { Email } = req.body;
