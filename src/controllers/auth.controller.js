@@ -29,10 +29,12 @@ export const register = async (req, res) => {
 
         
         res.cookie('token', token, {
-            httpOnly: true,
-            secure: true, // Enviar solo sobre HTTPS en producción
-            maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie expira en 7 días
-            sameSite: 'None' // La cookie no se envía con solicitudes de origen cruzado
+             domain: 'backend-robo.vercel.app',
+  path: '/',
+  secure: true, // Ensure the cookie is only sent over HTTPS
+  sameSite: 'None', // Allow cross-site requests
+  httpOnly: true, // Optional: Make the cookie accessible only by the web server
+  maxAge: 24 * 60 * 60 * 1000 // La cookie no se envía con solicitudes de origen cruzado
         });
 
         res.json({
