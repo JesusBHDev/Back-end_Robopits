@@ -32,7 +32,7 @@ export const register = async (req, res) => {
             domain: 'backend-robo.vercel.app',
             path: '/',
             secure: process.env.NODE_ENV === 'production', // Solo en producción
-            sameSite: 'strict',
+            SameSite: Strict,
             httpOnly: true, // Solo accesible por el servidor
             maxAge: 24 * 60 * 60 * 1000 // Expiración de la cookie (1 día)
         });
