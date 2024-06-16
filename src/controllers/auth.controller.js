@@ -70,6 +70,14 @@ export const login = async (req, res) => {
 
         const token = await createAccessToken({ id: userFound._id });
 
+        // Configuración de la cookie con opciones seguras
+        res.cookie('token', token, {
+            httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
+            secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
+            maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
+            sameSite: 'none' // La cookie no se envía con peticiones de origen cruzado
+        });
+        
         // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -83,14 +91,6 @@ export const login = async (req, res) => {
             motivo: "Inicio de sesión"
         });
         await inicio.save();
-        
-        // Configuración de la cookie con opciones seguras
-        res.cookie('token', token, {
-            httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
-            secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
-            maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
-            sameSite: 'none' // La cookie no se envía con peticiones de origen cruzado
-        });
         
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
