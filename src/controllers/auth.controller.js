@@ -71,7 +71,14 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
 
-        const token = await createAccessToken({ id: userFound._id });
+        const token = jwt.sign(
+            {id: userFound._id },
+            TOKEN_SECRET,
+            {
+                expiresIn:'1h'
+            }
+        )
+
 
         // Configuración de la cookie con opciones seguras
         res.cookie('token', token, {
@@ -80,8 +87,8 @@ export const login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production', // Solo en producción
             sameSite: 'strict',
             httpOnly: true, // Solo accesible por el servidor
-            maxAge: 24 * 60 * 60 * 1000 // Expiración de la cookie (1 día)
-        });
+            maxAge: 1000 * 60 * 60 // Expiración de la cookie (1 día)
+        }).send({userFound, token});
 
         
         // Guarda el registro de inicio de sesión
