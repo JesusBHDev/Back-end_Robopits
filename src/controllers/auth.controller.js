@@ -28,7 +28,14 @@ export const register = async (req, res) => {
         const token = await createAccessToken({id: userSaved._id});
 
         console.log(token);
-  res.cookie('token', token);
+  res.cookie('token', token,{
+      domain: 'https://backend-robo.vercel.app',
+  path: '/',
+  secure: true, // Ensure the cookie is only sent over HTTPS
+  sameSite: 'Stric', // Allow cross-site requests
+  httpOnly: true, // Optional: Make the cookie accessible only by the web server
+  maxAge: 24 * 60 * 60 * 1000 /
+  });
 
         res.json({
             id: userSaved._id,
