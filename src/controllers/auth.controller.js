@@ -75,7 +75,7 @@ export const login = async (req, res) => {
             httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
             secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
             maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
-            sameSite: 'strict' // La cookie no se envía con peticiones de origen cruzado
+            sameSite: 'none' // La cookie no se envía con peticiones de origen cruzado
         });
 
         // Guarda el registro de inicio de sesión
