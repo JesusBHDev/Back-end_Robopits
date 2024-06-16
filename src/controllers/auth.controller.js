@@ -82,7 +82,7 @@ export const login = async (req, res) => {
 
         // Configuración de la cookie con opciones seguras
         res.cookie('token', token, {
-            domain: 'backend-robo.vercel.app',
+            domain: 'backend-robo.vercel.app/',
             path: '/',
             secure: process.env.NODE_ENV === 'production', // Solo en producción
             sameSite: 'strict',
