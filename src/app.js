@@ -13,7 +13,7 @@ import PedidoRoutes from  './routes/pedido.routes.js';
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: ['https://robopits.online'],
     credentials: true, // Permitir credenciales (cookies, autorización HTTP, etc.)
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeceras permitidas
