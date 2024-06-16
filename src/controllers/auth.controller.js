@@ -140,7 +140,7 @@ export const verifyToken = async (req, res) => {
         if (err) return res.status(401).json({ message: "no autorizado2" });
 
         try {
-            const userFound = await User.findById(user._id);
+            const userFound = await User.findById(user.id);
             if (!userFound) return res.status(401).json({ message: "no autorizado3" });
 
             return res.json({
