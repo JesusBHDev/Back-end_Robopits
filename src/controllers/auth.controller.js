@@ -70,14 +70,6 @@ export const login = async (req, res) => {
 
         const token = await createAccessToken({ id: userFound._id });
 
-        // Configuración de la cookie con opciones seguras
-        res.cookie('token', token, {
-            httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
-            secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
-            maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
-            sameSite: 'none' // La cookie no se envía con peticiones de origen cruzado
-        });
-
         // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -91,6 +83,14 @@ export const login = async (req, res) => {
             motivo: "Inicio de sesión"
         });
         await inicio.save();
+        
+        // Configuración de la cookie con opciones seguras
+        res.cookie('token', token, {
+            httpOnly: true, // La cookie no es accesible via JavaScript en el cliente
+            secure: process.env.NODE_ENV === 'production', // Solo se envía con peticiones HTTPS
+            maxAge: 24 * 60 * 60 * 1000, // Expire en 24 horas (expresado en milisegundos)
+            sameSite: 'none' // La cookie no se envía con peticiones de origen cruzado
+        });
         
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
@@ -114,7 +114,7 @@ export const logout = (req, res) =>{
         expires: new Date(0)
     })
     return res.sendStatus(200);
-}
+};
 
 export const profile = async (req, res) =>{
     const userFound = await User.findById(req.user.id)
@@ -129,10 +129,10 @@ export const profile = async (req, res) =>{
         updatedAt: userFound.updatedAt,
     })
         res.send("holi profile")
-}
+};
 
 export const verifyToken = async (req, res) =>{
-    const {token} = req.cookies
+    const {token} = res.cookie
 
     if(!token) return res.status(401).json({message:"no autorizado1"});
 
@@ -140,7 +140,7 @@ export const verifyToken = async (req, res) =>{
         if(err) return res.status(401).json({message:"no autorizado2"});
 
         const userFound =  await User.findById(user.id)
-        if(!userFound) res.status(401).json({message:"no autorizado3"})
+        if(!userFound) res.status(401).json({message:"no autorizado3"});
 
         return res.json({
             id :userFound._id,
@@ -149,7 +149,7 @@ export const verifyToken = async (req, res) =>{
         });
 
     })
-}
+};
 
 export const forgotPassword = async (req, res, next) =>{
     const { Email } = req.body;
