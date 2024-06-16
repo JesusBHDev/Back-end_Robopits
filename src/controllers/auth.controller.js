@@ -32,7 +32,7 @@ export const register = async (req, res) => {
           domain: 'https://backend-robo.vercel.app',
           path: '/',
           secure: true, // Ensure the cookie is only sent over HTTPS
-          sameSite:'strict',
+          SameSite:'strict',
           httpOnly: true, // Optional: Make the cookie accessible only by the web server
           maxAge: 24 * 60 * 60 * 1000 // Optional: Set cookie expiration time
         });
