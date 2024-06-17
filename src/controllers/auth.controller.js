@@ -71,15 +71,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
 
-        const token = jwt.sign(
-            {id: userFound._id },
-            TOKEN_SECRET,
-            {
-                expiresIn:'1h'
-            }
-        )
-
-        //const token = await createAccessToken({ id: userFound._id });
+        const token = await createAccessToken({ id: userFound._id });
         console.log(token);
         res.cookie('token', token,{
             domain: 'backend-robo.vercel.app/',
