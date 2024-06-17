@@ -71,13 +71,8 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
 
-        const token = jwt.sign(
-            {id: userFound._id },
-            TOKEN_SECRET,
-            {
-                expiresIn:'1h'
-            }
-        )
+        const token = jwt.sign({ id: userFound._id }, TOKEN_SECRET, { expiresIn: '1d' });
+        res.json({ success: true, message: 'Login successful', token });
 
 
         // Configuración de la cookie con opciones seguras
