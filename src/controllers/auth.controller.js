@@ -30,7 +30,7 @@ export const register = async (req, res) => {
         console.log(token);
         res.cookie('token', token, {
             domain: 'backend-robo.vercel.app',
-            path: '/',
+            path: '/api/login',
             secure: process.env.NODE_ENV === 'production', // Solo en producción
             sameSite: 'strict',
             httpOnly: true, // Solo accesible por el servidor
@@ -74,6 +74,8 @@ export const login = async (req, res) => {
         const token = await createAccessToken({ id: userFound._id });
         console.log(token);
         res.cookie('token', token, {
+            domain: 'https://backend-robo.vercel.app',
+            path: '/api/login',
             httpOnly: true,
             secure: true, // asegúrate de que solo se envíen en conexiones HTTPS
             sameSite: 'strict', // necesario para cookies de terceros en sitios cruzados
