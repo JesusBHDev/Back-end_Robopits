@@ -76,7 +76,7 @@ export const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true, // asegúrate de que solo se envíen en conexiones HTTPS
-            sameSite: 'None' // necesario para cookies de terceros en sitios cruzados
+            SameSite: 'strict', // necesario para cookies de terceros en sitios cruzados
          });
 
 
