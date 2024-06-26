@@ -63,12 +63,12 @@ export const login = async (req, res) => {
         const userFound = await User.findOne({ Email });
 
         if (!userFound) {
-            return res.status(400).json({ message: "Usuario no encontrado" });
+            return res.status(400).json({ success: false, message: "Usuario no encontrado" });
         }
 
         const isMatch = await bcrypt.compare(Password, userFound.Password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Contraseña incorrecta" });
+            return res.status(400).json({ success: false, message: "Contraseña incorrecta" });
         }
 
         const token = await createAccessToken({ id: userFound._id });
@@ -79,10 +79,8 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: true, // asegúrate de que solo se envíen en conexiones HTTPS
             sameSite: 'strict', // necesario para cookies de terceros en sitios cruzados
-         });
+        });
 
-
-        
         // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -96,9 +94,10 @@ export const login = async (req, res) => {
             motivo: "Inicio de sesión"
         });
         await inicio.save();
-        
+
         // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
+            success: true, // Asegúrate de que el campo success esté presente y sea true
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
@@ -109,9 +108,10 @@ export const login = async (req, res) => {
 
     } catch (error) {
         console.error('Error en login:', error);
-        res.status(500).json({ message: 'Error interno en el servidor' });
+        res.status(500).json({ success: false, message: 'Error interno en el servidor' });
     }
 };
+
 export const loginwearos = async (req, res) => {
     const { Email, Password } = req.body;
     try {
