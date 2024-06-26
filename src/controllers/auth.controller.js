@@ -112,6 +112,28 @@ export const login = async (req, res) => {
         res.status(500).json({ message: 'Error interno en el servidor' });
     }
 };
+export const loginwearos = async (req, res) => {
+    const { Email, Password } = req.body;
+    try {
+        const userFound = await User.findOne({ Email });
+        if (!userFound) {
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        }
+
+        const isMatch = await bcrypt.compare(Password, userFound.Password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Contraseña incorrecta" });
+        }
+
+        // Login exitoso, devolvemos solo la confirmación
+        res.status(200).json({
+            message: 'Inicio de sesión exitoso'
+        });
+    } catch (error) {
+        console.error('Error en login:', error);
+        res.status(500).json({ message: 'Error interno en el servidor' });
+    }
+};
 
 
 export const logout = (req, res) =>{
