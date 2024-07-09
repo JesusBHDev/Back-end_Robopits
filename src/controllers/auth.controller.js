@@ -26,7 +26,16 @@ export const register = async (req, res) => {
         const userSaved = await newUser.save();
         const token = await createAccessToken({id: userSaved._id});
 
-        res.cookie('token', token);
+        console.log(token);
+        res.cookie('token', token, {
+            domain: 'backend-robo.vercel.app',
+            path: '/api/login',
+            secure: process.env.NODE_ENV === 'production', // Solo en producción
+            sameSite: 'strict',
+            httpOnly: true, // Solo accesible por el servidor
+            maxAge: 24 * 60 * 60 * 1000 // Expiración de la cookie (1 día)
+        });
+
 
         res.json({
             id: userSaved._id,
@@ -46,11 +55,13 @@ export const register = async (req, res) => {
     }
 
 }
+
 export const login = async (req, res) => {
     const { Email, Password } = req.body;
     try {
         const userFound = await User.findOne({ Email });
 
+<<<<<<< HEAD
         if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" });
         const isMatch = await bcrypt.compare(Password, userFound.Password);
         if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
@@ -58,7 +69,28 @@ export const login = async (req, res) => {
         const token = await createAccessToken({ id: userFound._id });
         console.log(token);
         res.cookie('token', token);
+=======
+        if (!userFound) {
+            return res.status(400).json({ success: false, message: "Usuario no encontrado" });
+        }
 
+        const isMatch = await bcrypt.compare(Password, userFound.Password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: "Contraseña incorrecta" });
+        }
+
+        const token = await createAccessToken({ id: userFound._id });
+        console.log(token);
+        res.cookie('token', token, {
+            domain: 'https://backend-robo.vercel.app',
+            path: '/api/login',
+            httpOnly: true,
+            secure: true, // asegúrate de que solo se envíen en conexiones HTTPS
+            sameSite: 'strict', // necesario para cookies de terceros en sitios cruzados
+        });
+>>>>>>> 2e65501586b68f12cdec385624104a506a3c3a3f
+
+        // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
             usuario: {
@@ -68,11 +100,18 @@ export const login = async (req, res) => {
                 createdAt: userFound.createdAt,
                 updatedAt: userFound.updatedAt
             },
-            motivo: "Inicio de sesion"
+            motivo: "Inicio de sesión"
         });
+<<<<<<< HEAD
         
         await inicio.save();
+=======
+        await inicio.save();
+
+        // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
+>>>>>>> 2e65501586b68f12cdec385624104a506a3c3a3f
         res.status(200).json({
+            success: true, // Asegúrate de que el campo success esté presente y sea true
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
@@ -83,16 +122,41 @@ export const login = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error en login:', error);
+        res.status(500).json({ success: false, message: 'Error interno en el servidor' });
     }
 };
+
+export const loginwearos = async (req, res) => {
+    const { Email, Password } = req.body;
+    try {
+        const userFound = await User.findOne({ Email });
+        if (!userFound) {
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        }
+
+        const isMatch = await bcrypt.compare(Password, userFound.Password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Contraseña incorrecta" });
+        }
+
+        // Login exitoso, devolvemos solo la confirmación
+        res.status(200).json({
+            message: 'Inicio de sesión exitoso'
+        });
+    } catch (error) {
+        console.error('Error en login:', error);
+        res.status(500).json({ message: 'Error interno en el servidor' });
+    }
+};
+
 
 export const logout = (req, res) =>{
     res.cookie('token', "",{
         expires: new Date(0)
     })
     return res.sendStatus(200);
-}
+};
 
 export const profile = async (req, res) =>{
     const userFound = await User.findById(req.user.id)
@@ -107,27 +171,31 @@ export const profile = async (req, res) =>{
         updatedAt: userFound.updatedAt,
     })
         res.send("holi profile")
-}
+};
 
-export const verifyToken = async (req, res) =>{
-    const {token} = req.cookies
+export const verifyToken = async (req, res) => {
+    const { token } = req.cookies;
 
-    if(!token) return res.status(401).json({message:"no autorizado1"});
+    if (!token) return res.status(401).json({ message: "no hay token" });
 
-    jwt.verify(token, TOKEN_SECRET, async (err, user) =>{
-        if(err) return res.status(401).json({message:"no autorizado2"});
+    jwt.verify(token, TOKEN_SECRET, async (err, user) => {
+        if (err) return res.status(401).json({ message: "no autorizado2" });
 
-        const userFound =  await User.findById(user.id)
-        if(!userFound) res.status(401).json({message:"no autorizado3"})
+        try {
+            const userFound = await User.findById(user.id);
+            if (!userFound) return res.status(401).json({ message: "no autorizado3" });
 
-        return res.json({
-            id :userFound._id,
-            Nombre: userFound.Nombre,
-            Email: userFound.Email
-        });
+            return res.json({
+                id: userFound._id,
+                Nombre: userFound.Nombre,
+                Email: userFound.Email
+            });
+        } catch (error) {
+            return res.status(500).json({ message: "Error del servidor" });
+        }
+    });
+};
 
-    })
-}
 
 export const forgotPassword = async (req, res, next) =>{
     const { Email } = req.body;
