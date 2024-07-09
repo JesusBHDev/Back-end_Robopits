@@ -61,7 +61,7 @@ export const obtenerPedidosCliente = async (req, res) => {
     if (!pedidos) {
       return res.status(404).json({ message: "No se encontraron pedidos para este cliente" });
     }
-    res.status(200).json({ pedidos });
+    res.status(200).json(pedidos);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener los pedidos", error });
   }
