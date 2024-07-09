@@ -8,7 +8,6 @@ import { createAccessToken } from '../libs/jwt.js'
 import { TOKEN_SECRET } from "../config.js";
 import dotenv from 'dotenv'
 
-
 export const register = async (req, res) => {
     const {Nombre, Email, Password} = req.body
     try {
@@ -53,13 +52,12 @@ export const login = async (req, res) => {
         const userFound = await User.findOne({ Email });
 
         if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" });
-
         const isMatch = await bcrypt.compare(Password, userFound.Password);
-
         if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
         const token = await createAccessToken({ id: userFound._id });
         console.log(token);
+        res.cookie('token', token);
 
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -72,20 +70,16 @@ export const login = async (req, res) => {
             },
             motivo: "Inicio de sesion"
         });
-
-        // Guarda el registro de inicio de sesión
+        
         await inicio.save();
-
-        res.cookie('token', token);
-
-        // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
         res.status(200).json({
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
-            message: 'Inicio de sesión exitoso'
+            message: 'Inicio de sesión exitoso',
+            token:token
         });
 
     } catch (error) {
