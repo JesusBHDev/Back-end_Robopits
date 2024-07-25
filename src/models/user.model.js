@@ -3,22 +3,31 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
   {
     Nombre: {
-      type: String, 
-      require: true,
+      type: String,
+      required: true,
     },
     Email: {
       type: String,
-      require: true,
-      // trim: true, //funciona para quitar los espacios en balnco y deja solo el texto de enmedio
+      required: true,
       unique: true,
+      trim: true,
     },
     Password: {
       type: String,
-      require: true,
+      required: true,
+    },
+    Telefono: {
+      type: String,
+      default: '',  // Correcto, define un valor por defecto para el teléfono
+    },
+    Tipo: {
+      type: String,
+      default: 'Ninguno',  // Correcto, define un valor por defecto para el teléfono
     },
   },
   {
-    timestamps: true,
+    timestamps: true,  // Esto creará automáticamente campos para 'createdAt' y 'updatedAt'
   }
 );
+
 export default mongoose.model("User", userSchema);

@@ -9,7 +9,7 @@ const empleadoSchema = new mongoose.Schema(
     Email: {
       type: String,
       require: true,
-      // trim: true, //funciona para quitar los espacios en balnco y deja solo el texto de enmedio
+      // trim: true  //funciona para quitar los espacios en balnco y deja solo el texto de enmedio
       unique: true,
     },
     Password: {

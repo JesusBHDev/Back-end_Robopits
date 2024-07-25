@@ -5,7 +5,7 @@ const productoSchema = new mongoose.Schema(
         IdProducto: {
             type: String,
             required: true,
-            unique: true // Añadido unique para asegurar que el ID del producto sea único
+            unique: true
         },
         Imagen: {
             type: String,
@@ -31,15 +31,15 @@ const productoSchema = new mongoose.Schema(
         },
         Descripcion: {
             type: String,
-            required: true // Añadido required para asegurar que la descripción del producto sea obligatoria
+            required: true 
         },
         Caracteristicas: {
             type: String,
-            required: true // Añadido required para asegurar que las características del producto sean obligatorias
+            required: true 
         },
         Incluye: {
             type: String,
-            required: true // Añadido required para asegurar que el contenido incluido del producto sea obligatorio
+            required: true 
         }
     },
     {
