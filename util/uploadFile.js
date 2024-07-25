@@ -4,7 +4,7 @@ import sharp from 'sharp'
 
 export async function uploadFile(file){
     let fileBuffer = await sharp(file.buffer)
-    .resize({width: 200, height: 200, fit: 'cover'})
+    .resize({width: null, height: null, fit: 'cover'})
     .toBuffer()
 
     const fileRef = ref(storage, `files/${file.originalName} ${Date.now()}`)

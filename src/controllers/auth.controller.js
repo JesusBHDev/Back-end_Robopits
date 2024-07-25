@@ -61,15 +61,6 @@ export const login = async (req, res) => {
     try {
         const userFound = await User.findOne({ Email });
 
-<<<<<<< HEAD
-        if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" });
-        const isMatch = await bcrypt.compare(Password, userFound.Password);
-        if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
-
-        const token = await createAccessToken({ id: userFound._id });
-        console.log(token);
-        res.cookie('token', token);
-=======
         if (!userFound) {
             return res.status(400).json({ success: false, message: "Usuario no encontrado" });
         }
@@ -81,15 +72,6 @@ export const login = async (req, res) => {
 
         const token = await createAccessToken({ id: userFound._id });
         console.log(token);
-        res.cookie('token', token, {
-            domain: 'https://backend-robo.vercel.app',
-            path: '/api/login',
-            httpOnly: true,
-            secure: true, // asegúrate de que solo se envíen en conexiones HTTPS
-            sameSite: 'strict', // necesario para cookies de terceros en sitios cruzados
-        });
->>>>>>> 2e65501586b68f12cdec385624104a506a3c3a3f
-
         // Guarda el registro de inicio de sesión
         const inicio = new IniciosDeSesion({
             ip: req.ip,
@@ -102,19 +84,14 @@ export const login = async (req, res) => {
             },
             motivo: "Inicio de sesión"
         });
-<<<<<<< HEAD
         
         await inicio.save();
-=======
-        await inicio.save();
-
-        // Envía la respuesta con los datos del usuario y el mensaje de inicio de sesión exitoso
->>>>>>> 2e65501586b68f12cdec385624104a506a3c3a3f
         res.status(200).json({
             success: true, // Asegúrate de que el campo success esté presente y sea true
             id: userFound._id,
             Nombre: userFound.Nombre,
             Email: userFound.Email,
+            Telefono: userFound.Telefono,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
             message: 'Inicio de sesión exitoso',
@@ -174,29 +151,29 @@ export const profile = async (req, res) =>{
 };
 
 export const verifyToken = async (req, res) => {
-    const { token } = req.cookies;
-
+    const token = req.headers['authorization'].split(' ')[1]; // Get token from Authorization header
+  
     if (!token) return res.status(401).json({ message: "no hay token" });
-
+  
     jwt.verify(token, TOKEN_SECRET, async (err, user) => {
-        if (err) return res.status(401).json({ message: "no autorizado2" });
-
-        try {
-            const userFound = await User.findById(user.id);
-            if (!userFound) return res.status(401).json({ message: "no autorizado3" });
-
-            return res.json({
-                id: userFound._id,
-                Nombre: userFound.Nombre,
-                Email: userFound.Email
-            });
-        } catch (error) {
-            return res.status(500).json({ message: "Error del servidor" });
-        }
+      if (err) return res.status(401).json({ message: "no autorizado2" });
+  
+      try {
+        const userFound = await User.findById(user.id);
+        if (!userFound) return res.status(401).json({ message: "no autorizado3" });
+  
+        return res.json({
+          id: userFound._id,
+          Nombre: userFound.Nombre,
+          Email: userFound.Email,
+          Telefono: userFound.Telefono  
+        });
+      } catch (error) {
+        return res.status(500).json({ message: "Error del servidor" });
+      }
     });
-};
-
-
+  };
+  
 export const forgotPassword = async (req, res, next) =>{
     const { Email } = req.body;
 
@@ -290,4 +267,64 @@ export const PasswordReset = async (req, res, next) => {
     }
 };
 
+export const obtenerPerfil = async (req, res) => {
+    const { userId } = req.params;
 
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        res.status(200).json({
+            nombre: user.Nombre,
+            email: user.Email,
+            telefono: user.Telefono || '' // Devuelve un string vacío si no hay teléfono
+        });
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        res.status(500).json({ message: 'Error interno en el servidor.' });
+    }
+};
+
+export const actualizarPerfil = async (req, res) => {
+    const { userId } = req.params;
+    const { nombre, telefono } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        user.Nombre = nombre || user.Nombre;
+        user.Telefono = telefono || user.Telefono;
+
+        await user.save();
+
+        res.status(200).json({ message: 'Perfil actualizado correctamente.' });
+    } catch (error) {
+        console.error('Error al actualizar el perfil del usuario:', error);
+        res.status(500).json({ message: 'Error interno en el servidor.' });
+    }
+};
+
+export const actualizarTelefonoUsuario = async (req, res) => {
+    const { userId } = req.params;
+    const { telefono } = req.body;
+
+    try {
+        const usuario = await User.findById(userId);
+        if (!usuario) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        usuario.Telefono = telefono; // Asegúrate de que el modelo de usuario tiene un campo para el teléfono
+        await usuario.save();
+        res.status(200).json({ message: "Número de teléfono actualizado con éxito", usuario: usuario });
+    } catch (error) {
+        res.status(500).json({ message: "Error al actualizar el número de teléfono", error });
+    }
+};

@@ -11,7 +11,6 @@ const PedidoSchema = new Schema({
     },
     nombre: {
       type: String,
-
     }
   },
   productos: [
@@ -44,6 +43,9 @@ const PedidoSchema = new Schema({
     type: Number,
     default: 0
   },
+  totalproductos: {
+    type: Number
+  },
   total: {
     type: Number,
     required: true
@@ -53,8 +55,8 @@ const PedidoSchema = new Schema({
     required: true
   },
   puntoDeRetiro: {
+    enum: ['Pendiente','Parque Poblamiento', 'Centro de huejutla'],
     type: String,
-
   },
   estado: {
     type: String,
@@ -68,12 +70,13 @@ const PedidoSchema = new Schema({
   updatedAt: {
     type: Date,
     default: Date.now
-  }
+  },
 });
 
-// Middleware para calcular el precio total antes de guardar
+// Middleware para calcular el total de productos y el precio total antes de guardar
 PedidoSchema.pre('save', function(next) {
   this.total = this.productos.reduce((total, item) => total + item.price * item.quantity, 0) - this.descuento;
+  this.totalproductos = this.productos.reduce((total, item) => total + item.quantity, 0);
   this.updatedAt = Date.now();
   next();
 });
