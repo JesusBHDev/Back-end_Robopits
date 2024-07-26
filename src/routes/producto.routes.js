@@ -3,7 +3,8 @@ import { obtenerProductos,
          crearProducto,
          obtenerProducto,
          eliminarProducto,
-         actualizarProducto
+         actualizarProducto,
+         obtenerProductosPorCategoria
  } from "../controllers/Productos.controller.js";
  import { upload } from "../config/multer.js";
 
@@ -14,5 +15,6 @@ router.post('/Productos', upload.fields([{name: 'Imagen', maxCount: 1}]), crearP
 router.get('/Producto/:id', obtenerProducto);
 router.delete('/Producto/:id', eliminarProducto);
 router.put('/Producto/:id',upload.fields([{name: 'Imagen', maxCount: 1}]), actualizarProducto);
+router.get('/Productos/categoria/:categoriaId', obtenerProductosPorCategoria);
 
 export default router;

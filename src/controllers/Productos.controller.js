@@ -10,6 +10,23 @@ export const obtenerProductos = async (req, res) => {
   }
 };
 
+export const obtenerProductosPorCategoria = async (req, res) => {
+  try {
+      const { categoriaId } = req.params; // Obtén el ID de la categoría desde el parámetro de la URL
+      const categoria = await Categoria.findById(categoriaId); // Busca la categoría por su ID
+
+      if (!categoria) {
+          return res.status(404).json({ error: "Categoría no encontrada" });
+      }
+
+      const productos = await Producto.find({ Categoria: categoria.NameCategoria }); // Filtra productos por el nombre de la categoría
+      res.json(productos);
+  } catch (error) {
+      console.error("Error al obtener productos por categoría:", error);
+      res.status(500).json({ error: "Error interno al obtener productos" });
+  }
+};
+
 export const crearProducto = async (req, res) => {
   const body = req.body;
   const image = req.files.Imagen
@@ -69,6 +86,7 @@ export const eliminarProducto = async (req, res) => {
     res.status(500).json({ error: "Error al eliminar el producto" });
   }
 };
+
 export const actualizarProducto = async (req, res) => {
   try {
     const productId = req.params.id;
