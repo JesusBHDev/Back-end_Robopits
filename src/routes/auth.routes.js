@@ -3,7 +3,7 @@ import { register,
           login, 
           logout,
           verifyToken,
-          forgotPassword, 
+          forgorPassword, 
           PasswordReset,
           obtenerPerfil,
           actualizarPerfil} from "../controllers/auth.controller.js";
