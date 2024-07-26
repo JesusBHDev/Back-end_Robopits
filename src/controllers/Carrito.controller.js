@@ -56,7 +56,7 @@ export const agregarProductoAlCarrito = async (req, res) => {
     await carrito.save();
 
     // Enviar solicitud al microservicio Flask
-    const response = await axios.post('http://127.0.0.1:5000/recommend', {
+    const response = await axios.post('https://python-tlk2.onrender.com/recommend', {
       product_id: producto._id
     });
 
