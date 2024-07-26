@@ -137,7 +137,7 @@ export const verifyToken = async (req, res) => {
     });
   };
   
-export const forgotPassword = async (req, res, next) =>{
+export const forgorPassword = async (req, res, next) =>{
     const { Email } = req.body;
 
     try {
