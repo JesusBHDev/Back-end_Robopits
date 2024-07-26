@@ -4,7 +4,6 @@ import User from '../models/user.model.js';
 import Producto from '../models/Producto.model.js';
 
 let globalRecommendations = [];
-
 export const agregarProductoAlCarrito = async (req, res) => {
   const { userId, productId, quantity } = req.body;
   console.log('ID del usuario:', userId);
@@ -32,7 +31,6 @@ export const agregarProductoAlCarrito = async (req, res) => {
       });
     }
 
-    // Verificar si el producto ya está en el carrito
     const itemIndex = carrito.items.findIndex(item => item.productId.toString() === productId);
     if (itemIndex > -1) {
       // Si el producto ya está en el carrito, actualizar la cantidad
@@ -58,10 +56,12 @@ export const agregarProductoAlCarrito = async (req, res) => {
     // Enviar solicitud al microservicio Flask
     const response = await axios.post('https://python-tlk2.onrender.com/recommend', {
       product_id: producto._id
+      
     });
 
     // Guardar recomendaciones en el arreglo global
     globalRecommendations = response.data;
+    console.log(globalRecommendations)
 
     res.status(200).json({ message: "Producto agregado al carrito exitosamente", carrito });
   } catch (error) {

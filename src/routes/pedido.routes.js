@@ -7,7 +7,8 @@ import {
   obtenerPedidosListos,
   actualizarPedido,
   eliminarPedido,
-  estadoPedidos 
+  estadoPedidos,
+  obtenerIdsDeProductosDePedidos
 } from '../controllers/Pedido.controller.js';
 
 const router = Router();
@@ -19,7 +20,7 @@ router.get('/pedidos-pendientes', obtenerPedidosPendientes);
 router.get('/pedidos-listos', obtenerPedidosListos);
 router.put('/actualizarPedido/:id', actualizarPedido); 
 router.delete('/eliminarPedido/:id', eliminarPedido);
-
+router.get('/productId', obtenerIdsDeProductosDePedidos);
 // Ruta para obtener pedidos por estado
 router.get('/pedidos/estado/:estado', estadoPedidos);
 

@@ -4,7 +4,8 @@ import { obtenerProductos,
          obtenerProducto,
          eliminarProducto,
          actualizarProducto,
-         obtenerProductosPorCategoria
+         obtenerProductosPorCategoria,
+         
  } from "../controllers/Productos.controller.js";
  import { upload } from "../config/multer.js";
 
