@@ -104,28 +104,6 @@ export const login = async (req, res) => {
     }
 };
 
-export const loginwearos = async (req, res) => {
-    const { Email, Password } = req.body;
-    try {
-        const userFound = await User.findOne({ Email });
-        if (!userFound) {
-            return res.status(400).json({ message: "Usuario no encontrado" });
-        }
-
-        const isMatch = await bcrypt.compare(Password, userFound.Password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Contraseña incorrecta" });
-        }
-
-        // Login exitoso, devolvemos solo la confirmación
-        res.status(200).json({
-            message: 'Inicio de sesión exitoso'
-        });
-    } catch (error) {
-        console.error('Error en login:', error);
-        res.status(500).json({ message: 'Error interno en el servidor' });
-    }
-};
 
 
 export const logout = (req, res) =>{
@@ -133,21 +111,6 @@ export const logout = (req, res) =>{
         expires: new Date(0)
     })
     return res.sendStatus(200);
-};
-
-export const profile = async (req, res) =>{
-    const userFound = await User.findById(req.user.id)
-   
-    if(!userFound) return res.status(400).json({message: "usuario no encontrado"});
-
-    return res.json({
-        id:userFound._id,
-        username: userFound.Nombre,
-        email: userFound.Email,
-        createdAt: userFound.createdAt,
-        updatedAt: userFound.updatedAt,
-    })
-        res.send("holi profile")
 };
 
 export const verifyToken = async (req, res) => {
