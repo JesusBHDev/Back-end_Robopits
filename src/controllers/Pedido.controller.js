@@ -69,6 +69,17 @@ export const obtenerPedidosCliente = async (req, res) => {
   }
 };
 
+export const obtenerIdsDeProductosDePedidos = async (req, res) => {
+  try {
+    const pedidos = await Pedido.find().select('productos.productId');
+    const productIds = pedidos.map(pedido => pedido.productos.map(producto => producto.productId));
+    res.status(200).json({ productIds });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los IDs de los productos de los pedidos", error });
+    console.log(error)
+  }
+};
+
 export const obtenerTodosLosPedidos = async (req, res) => {
   try {
     const pedidos = await Pedido.find();

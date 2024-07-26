@@ -1,4 +1,5 @@
 import Producto from "../models/Producto.model.js";
+import Categoria from "../models/Categoria.model.js";
 import { uploadFile, deleteFile } from "../../util/uploadFile.js";
 
 export const obtenerProductos = async (req, res) => {
@@ -9,6 +10,8 @@ export const obtenerProductos = async (req, res) => {
     res.status(500).json({ error: "Error al obtener categorías" });
   }
 };
+
+
 
 export const obtenerProductosPorCategoria = async (req, res) => {
   try {
