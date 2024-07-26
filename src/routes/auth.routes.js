@@ -17,7 +17,7 @@ router.post("/register", validateSchema(registerSchema), register);
 router.post("/login", validateSchema(loginSchema), login);
 router.post("/logout", logout);
 router.get("/verify", verifyToken);
-router.post("/forgotPassword", forgorPassword);
+router.post("/forgorPassword", forgorPassword);
 router.post("/passwordReset", PasswordReset);
 router.get("/perfil/:userId", obtenerPerfil);
 router.put("/perfil/:userId", actualizarPerfil);
