@@ -1,6 +1,9 @@
+import axios from 'axios';
 import Carro from '../models/Carro.model.js';
 import User from '../models/user.model.js';
 import Producto from '../models/Producto.model.js';
+
+let globalRecommendations = [];
 
 export const agregarProductoAlCarrito = async (req, res) => {
   const { userId, productId, quantity } = req.body;
@@ -51,7 +54,14 @@ export const agregarProductoAlCarrito = async (req, res) => {
     producto.Existencias -= quantity;
     await producto.save();
     await carrito.save();
-    console.log(carrito)
+
+    // Enviar solicitud al microservicio Flask
+    const response = await axios.post('http://127.0.0.1:5000/recommend', {
+      product_id: producto._id
+    });
+
+    // Guardar recomendaciones en el arreglo global
+    globalRecommendations = response.data;
 
     res.status(200).json({ message: "Producto agregado al carrito exitosamente", carrito });
   } catch (error) {
@@ -59,7 +69,18 @@ export const agregarProductoAlCarrito = async (req, res) => {
   }
 };
 
-// Asegúrate de que siempre se devuelva un array para carrito.items en el backend.
+export const recomendaciones = async (req, res) => {
+  try {
+    // Obtener detalles de los productos recomendados
+    const recommendedProducts = await Producto.find({ _id: { $in: globalRecommendations } });
+
+    res.status(200).json(recommendedProducts);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las recomendaciones", error });
+  }
+};
+
+
 export const obtenerCarrito = async (req, res) => {
     const { userId } = req.params;
     console.log('ID del usuario:', userId);
