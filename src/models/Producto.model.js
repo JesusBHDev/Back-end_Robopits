@@ -1,33 +1,33 @@
 import mongoose from "mongoose";
+import autoIncrementFactory from 'mongoose-sequence';
 
 const productoSchema = new mongoose.Schema(
     {
         IdProducto: {
-            type: String,
-            required: true,
+            type: Number, // Cambiado de String a Number para usar el autoincremento
             unique: true
         },
         Imagen: {
             type: String,
-            required: true // Añadido required para asegurar que la imagen del producto sea obligatoria
+            required: true
         },
         NameProducto: {
             type: String,
-            required: true // Añadido required para asegurar que el nombre del producto sea obligatorio
+            required: true
         },
         Precio: {
             type: Number,
-            required: true, // Añadido required para asegurar que el precio del producto sea obligatorio
-            min: 0 // Añadido min para asegurar que el precio no sea negativo
+            required: true,
+            min: 0
         },
         Categoria: {
             type: String,
-            required: true // Añadido required para asegurar que la categoría del producto sea obligatoria
+            required: true
         },
         Existencias: {
             type: Number,
-            required: true, // Añadido required para asegurar que las existencias del producto sean obligatorias
-            min: 0 // Añadido min para asegurar que las existencias no sean negativas
+            required: true,
+            min: 0
         },
         Descripcion: {
             type: String,
@@ -46,5 +46,9 @@ const productoSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+// Inicializa autoIncrement
+const autoIncrement = autoIncrementFactory(mongoose);
+productoSchema.plugin(autoIncrement, { inc_field: 'IdProducto', start_seq: 36 });
 
 export default mongoose.model("Producto", productoSchema);
