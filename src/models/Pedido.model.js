@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import autoIncrementFactory from 'mongoose-sequence';
+
 const Schema = mongoose.Schema;
 
 // Definición del esquema para el pedido
@@ -63,6 +65,10 @@ const PedidoSchema = new Schema({
     enum: ['Pendiente', 'En preparacion', 'Listo', 'Cancelado'],
     default: 'Pendiente'
   },
+  pedidoId: {
+    type: Number,
+    unique: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -80,5 +86,8 @@ PedidoSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
+
+const autoIncrement = autoIncrementFactory(mongoose);
+PedidoSchema.plugin(autoIncrement, { inc_field: 'pedidoId' });
 
 export default mongoose.model('Pedido', PedidoSchema);
