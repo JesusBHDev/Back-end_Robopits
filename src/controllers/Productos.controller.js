@@ -50,7 +50,7 @@ export const crearProducto = async (req, res) => {
     }).save();
 
   
-    return res.status(200).json({ nuevoproducto });
+    return res.status(200).json({message: "Producto creado" });
   }
   return res.status(400).json({ message: "debes enviar una imagen" });
 };
