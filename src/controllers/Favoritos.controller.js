@@ -1,4 +1,3 @@
-// controllers/favoritos.controller.js
 import Favoritos from '../models/Favoritos.model.js';
 
 // Agregar un producto a Favoritos
@@ -26,7 +25,10 @@ export const agregarAFavoritos = async (req, res) => {
 // Obtener los productos favoritos de un usuario
 export const obtenerFavoritos = async (req, res) => {
     try {
-        const favorito = await Favorito.findOne({ userId: req.params.userId }).populate('productos');
+        const favorito = await Favoritos.findOne({ userId: req.params.userId }).populate('productos');
+        if (!favorito) {
+            return res.status(404).json({ message: 'No se encontraron favoritos para este usuario' });
+        }
         res.status(200).json(favorito);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener Favoritos', error });
