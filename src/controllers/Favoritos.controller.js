@@ -1,15 +1,15 @@
 // controllers/favoritos.controller.js
-const Favorito = require('../models/Favoritos.model.js');
+const Favoritos = require('../models/Favoritos.model.js');
 
 // Agregar un producto a Favoritos
 export const agregarAFavoritos = async (req, res) => {
   const { userId, productoId } = req.body;
 
   try {
-    let favorito = await Favorito.findOne({ userId });
+    let favorito = await Favoritos.findOne({ userId });
 
     if (!favorito) {
-      favorito = new Favorito({ userId, productos: [productoId] });
+      favorito = new Favoritos({ userId, productos: [productoId] });
     } else {
       if (!favorito.productos.includes(productoId)) {
         favorito.productos.push(productoId);
@@ -26,7 +26,7 @@ export const agregarAFavoritos = async (req, res) => {
 // Obtener los productos favoritos de un usuario
 export const obtenerFavoritos = async (req, res) => {
   try {
-    const favorito = await Favorito.findOne({ userId: req.params.userId }).populate('productos');
+    const favorito = await Favoritos.findOne({ userId: req.params.userId }).populate('productos');
     res.status(200).json(favorito);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener Favoritos', error });
@@ -38,7 +38,7 @@ export const eliminarDeFavoritos = async (req, res) => {
   const { userId, productoId } = req.body;
 
   try {
-    const favorito = await Favorito.findOne({ userId });
+    const favorito = await Favoritos.findOne({ userId });
 
     if (favorito) {
       favorito.productos = favorito.productos.filter(id => id.toString() !== productoId);
