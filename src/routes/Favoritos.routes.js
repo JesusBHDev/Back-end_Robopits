@@ -1,7 +1,9 @@
 // routes/favoritos.routes.js
 import { Router } from 'express';
-const router = express.Router();
+
 import { agregarAFavoritos, obtenerFavoritos, eliminarDeFavoritos } from '../controllers/Favoritos.controller.js';
+
+const router = Router();
 // Ruta para agregar un producto a Favoritos
 router.post('/favoritos/agregar', agregarAFavoritos);
 
