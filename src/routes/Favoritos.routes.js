@@ -1,5 +1,5 @@
 // routes/favoritos.routes.js
-const express = require('express');
+import { Router } from 'express';
 const router = express.Router();
 const { agregarAFavoritos, obtenerFavoritos, eliminarDeFavoritos } = require('../controllers/Favoritos.controller.js');
 
