@@ -6,5 +6,4 @@ const favoritoSchema = new Schema({
   productos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Producto' }]
 });
 
-const Favoritos = mongoose.model('Favoritos', favoritoSchema);
-module.exports = Favorito;
+export default mongoose.model('Pedido', PedidoSchema);
