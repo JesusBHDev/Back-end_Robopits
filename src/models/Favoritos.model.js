@@ -12,4 +12,4 @@ const favoritoSchema = new Schema({
   }]
 });
 
-export default mongoose.model('Pedido', PedidoSchema);
+export default mongoose.model('Favoritos', favoritoSchema);
