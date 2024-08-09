@@ -2,7 +2,7 @@
 const Favorito = require('../models/Favorito');
 
 // Agregar un producto a Favoritos
-const agregarAFavoritos = async (req, res) => {
+export const agregarAFavoritos = async (req, res) => {
   const { userId, productoId } = req.body;
 
   try {
@@ -24,7 +24,7 @@ const agregarAFavoritos = async (req, res) => {
 };
 
 // Obtener los productos favoritos de un usuario
-const obtenerFavoritos = async (req, res) => {
+export const obtenerFavoritos = async (req, res) => {
   try {
     const favorito = await Favorito.findOne({ userId: req.params.userId }).populate('productos');
     res.status(200).json(favorito);
@@ -34,7 +34,7 @@ const obtenerFavoritos = async (req, res) => {
 };
 
 // Eliminar un producto de Favoritos
-const eliminarDeFavoritos = async (req, res) => {
+export const eliminarDeFavoritos = async (req, res) => {
   const { userId, productoId } = req.body;
 
   try {
