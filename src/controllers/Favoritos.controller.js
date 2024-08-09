@@ -1,5 +1,5 @@
 // controllers/favoritos.controller.js
-const Favorito = require('../models/Favorito');
+const Favorito = require('../models/Favoritos.model.js');
 
 // Agregar un producto a Favoritos
 export const agregarAFavoritos = async (req, res) => {
