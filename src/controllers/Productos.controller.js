@@ -32,13 +32,20 @@ export const obtenerProductosPorCategoria = async (req, res) => {
 
 export const crearProducto = async (req, res) => {
   const body = req.body;
-  const image = req.files.Imagen
+  const image = req.files?.Imagen; // Usa optional chaining para evitar errores si req.files no está definido
 
-  if (image && image.length > 0) {
+  // Verifica que haya una imagen
+  if (!image || image.length === 0) {
+    return res.status(400).json({ message: "Debes enviar una imagen" });
+  }
+
+  try {
+    // Sube la imagen y obtiene la URL de descarga
     const { downloadURL } = await uploadFile(image[0]);
 
-    const nuevoproducto = await new Producto({
-      IdProducto: body.IdProducto,
+    // Crear una nueva instancia del modelo Producto
+    const nuevoproducto = new Producto({
+      IdProducto: body.IdProducto, // Este campo debe generarse automáticamente con el plugin auto-increment si se configura correctamente
       Imagen: downloadURL,
       NameProducto: body.NameProducto,
       Precio: body.Precio,
@@ -47,12 +54,17 @@ export const crearProducto = async (req, res) => {
       Descripcion: body.Descripcion,
       Caracteristicas: body.Caracteristicas,
       Incluye: body.Incluye,
-    }).save();
+    });
 
-  
-    return res.status(200).json({message: "Producto creado" });
+    // Guarda el producto en la base de datos
+    await nuevoproducto.save();
+
+    // Responde con éxito
+    return res.status(200).json({ message: "Producto creado", producto: nuevoproducto });
+  } catch (error) {
+    console.error("Error al guardar el producto:", error);
+    return res.status(500).json({ message: "Error al crear el producto", error: error.message });
   }
-  return res.status(400).json({ message: "debes enviar una imagen" });
 };
 
 export const obtenerProducto = async (req, res) => {
