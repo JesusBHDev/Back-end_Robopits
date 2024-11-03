@@ -2,7 +2,6 @@ import app from "./app.js";
 import { connectDB } from "./db.js";
 
 
-
 const pt = process.env.PORT || 4000;
 
 connectDB();
