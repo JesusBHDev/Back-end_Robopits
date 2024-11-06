@@ -3,7 +3,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 import authRoutes from './routes/auth.routes.js';
 import categoriaRoutes from "./routes/categoria.routes.js";
 import productoRoutes from "./routes/producto.routes.js";
