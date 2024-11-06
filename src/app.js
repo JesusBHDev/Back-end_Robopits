@@ -3,7 +3,9 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 import authRoutes from './routes/auth.routes.js';
 import categoriaRoutes from "./routes/categoria.routes.js";
 import productoRoutes from "./routes/producto.routes.js";
@@ -30,7 +32,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(stripe());
 
 app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
