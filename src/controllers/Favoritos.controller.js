@@ -1,4 +1,5 @@
 import Favoritos from '../models/Favoritos.model.js';
+import Producto from '../models/Producto.model.js';
 
 
 // Agregar un producto a Favoritos con información completa
