@@ -30,6 +30,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(stripe());
 
 app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
