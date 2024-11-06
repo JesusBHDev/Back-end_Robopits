@@ -13,6 +13,7 @@ import PedidoRoutes from  './routes/pedido.routes.js';
 import HistorialPedidos from './routes/HistorialPedidos.routes.js'
 import FavoritosRoutes from './routes/Favoritos.routes.js'
 import OfertasRoutes from './routes/Ofertas.routes.js'
+import StripeRoutes from './routes/Stripe.routes.js';
 
 const app = express();
 
@@ -43,5 +44,6 @@ app.use("/api", PedidoRoutes);
 app.use("/api", HistorialPedidos);
 app.use('/api', FavoritosRoutes);
 app.use("/api", OfertasRoutes);
+app.use('/api', StripeRoutes);
 
 export default app;
