@@ -3,8 +3,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
-import Stripe from 'stripe';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.routes.js';
 import categoriaRoutes from "./routes/categoria.routes.js";
@@ -18,6 +17,8 @@ import OfertasRoutes from './routes/Ofertas.routes.js'
 import StripeRoutes from './routes/Stripe.routes.js';
 
 const app = express();
+dotenv.config();
+
 
 app.use(cors({
     origin: ['https://robopits.online','https://www.robopits.online','http://localhost:3000'],
