@@ -1,31 +1,31 @@
 // src/controllers/suscripcion.controller.js
-import Suscripcion from '../models/Suscripcion.model.js';
+
+import mongoose from 'mongoose';  // Asegúrate de importar mongoose
+import Suscripcion from '../models/Suscripcion.model.js'; // Importa el modelo de suscripciones
 
 export const guardarSuscripcion = async (req, res) => {
-  const { subscription, userId } = req.body;  // Espera recibir `subscription` y `userId` en el cuerpo de la solicitud
+  const { subscription, userId } = req.body;
 
-  console.log('User ID recibido:', userId); // Esto debería mostrar el userId en el servidor
-  console.log('Suscripción recibida:', subscription);
-  
+  // Asegúrate de que userId sea una cadena de 24 caracteres o un ObjectId válido
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "ID de usuario no válido" });
+  }
+
   try {
-    // Revisa si ya existe una suscripción para este usuario
-    const suscripcionExistente = await Suscripcion.findOne({ userId });
-    if (suscripcionExistente) {
-      // Actualiza la suscripción si ya existe
-      suscripcionExistente.subscription = subscription;
-      await suscripcionExistente.save();
-      return res.status(200).json({ message: 'Suscripción actualizada correctamente' });
+    const suscripcionExistente = await Suscripcion.findOne({
+      userId,
+      'subscription.endpoint': subscription.endpoint,
+    });
+
+    if (!suscripcionExistente) {
+      const nuevaSuscripcion = new Suscripcion({ userId, subscription });
+      await nuevaSuscripcion.save();
+      return res.status(201).json({ message: 'Suscripción guardada correctamente' });
     }
 
-    // Si no existe, crea una nueva suscripción
-    const nuevaSuscripcion = new Suscripcion({
-      userId,
-      subscription
-    });
-    await nuevaSuscripcion.save();
-    res.status(201).json({ message: 'Suscripción guardada correctamente' });
+    return res.status(200).json({ message: 'La suscripción ya existe' });
   } catch (error) {
-    console.error('Error al guardar suscripción:', error);
-    res.status(500).json({ error: 'Error al guardar la suscripción' });
+    console.error('Error al guardar la suscripción:', error);
+    return res.status(500).json({ error: 'Error al guardar la suscripción' });
   }
 };

@@ -131,20 +131,15 @@ export const actualizarPedido = async (req, res) => {
 
     // Enviar notificación si el estado del pedido es "Listo"
     if (estado === "Listo") {
-      // Buscar la suscripción del usuario
-      const suscripcion = await Suscripcion.findOne({ userId: pedido.cliente.id });
-      
-      if (suscripcion) {
-        // Preparar el contenido de la notificación
-        const payload = JSON.stringify({
-          title: "Pedido Listo",
-          body: "¡Tu pedido está listo para ser recogido!",
-          url: "https://www.robopits.online/Pedidos"  // Cambia la URL según sea necesario
-        });
+      // Preparar el contenido de la notificación
+      const payload = JSON.stringify({
+        title: "Pedido Listo",
+        body: "¡Tu pedido está listo para ser recogido!",
+        url: "https://www.robopits.online/Pedidos"  // Cambia la URL según sea necesario
+      });
 
-        // Llama a la función para enviar la notificación
-        enviarNotificacion(suscripcion.subscription, payload);
-      }
+      // Llama a la función para enviar la notificación usando el userId
+      enviarNotificacion(pedido.cliente.id, payload);
     }
 
     res.status(200).json({ message: "Pedido actualizado correctamente", pedido });
@@ -152,6 +147,7 @@ export const actualizarPedido = async (req, res) => {
     res.status(500).json({ message: "Error al actualizar el pedido", error });
   }
 };
+
 
 export const eliminarPedido = async (req, res) => {
   
