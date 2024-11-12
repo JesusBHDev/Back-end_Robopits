@@ -135,7 +135,7 @@ export const actualizarPedido = async (req, res) => {
       const payload = JSON.stringify({
         title: "Pedido Listo",
         body: "¡Tu pedido está listo para ser recogido!",
-        icon:"https://www.robopits.online/images/robopits-peque%C3%B1o.webp",
+        icon:"https://www.robopits.online/images/robopits-pequeno.webp",
         url: "https://www.robopits.online/Pedidos"  // Cambia la URL según sea necesario
       });
 
