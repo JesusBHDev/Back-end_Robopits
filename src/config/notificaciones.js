@@ -9,18 +9,26 @@ webPush.setVapidDetails(
 );
 
 // Función para enviar una notificación
-export const enviarNotificacion = async (subscription, payload) => {
-    try {
-      await webPush.sendNotification(subscription, payload);
-      console.log('Notificación enviada exitosamente');
-    } catch (error) {
-      if (error.statusCode === 410) {
-        console.warn('La suscripción ha expirado o se ha dado de baja. Eliminando de la base de datos...');
-        
-        // Eliminar la suscripción caducada de la base de datos
-        await Suscripcion.findOneAndDelete({ "subscription.endpoint": subscription.endpoint });
-      } else {
-        console.error('Error al enviar notificación:', error);
-      }
-    }
-  };
+export const enviarNotificacion = async (userId, payload) => {
+  try {
+    const suscripciones = await Suscripcion.find({ userId });
+
+    await Promise.all(
+      suscripciones.map(async (suscripcion) => {
+        try {
+          await webPush.sendNotification(suscripcion.subscription, payload);
+          console.log('Notificación enviada exitosamente a', suscripcion.subscription.endpoint);
+        } catch (error) {
+          if (error.statusCode === 410) {
+            console.warn('La suscripción ha caducado, eliminando de la base de datos.');
+            await Suscripcion.findByIdAndDelete(suscripcion._id);
+          } else {
+            console.error('Error al enviar notificación:', error);
+          }
+        }
+      })
+    );
+  } catch (error) {
+    console.error('Error al enviar notificaciones:', error);
+  }
+};
