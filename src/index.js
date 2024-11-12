@@ -6,5 +6,5 @@ const pt = process.env.PORT || 4000;
 
 connectDB();
 app.listen(pt);
-console.log("server on port ", pt);
+console.log("Puerto del servidor: ", pt);
 

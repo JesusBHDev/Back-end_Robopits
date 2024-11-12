@@ -2,6 +2,8 @@ import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import bodyParser from "body-parser";
+import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.routes.js';
 import categoriaRoutes from "./routes/categoria.routes.js";
@@ -12,9 +14,14 @@ import PedidoRoutes from  './routes/pedido.routes.js';
 import HistorialPedidos from './routes/HistorialPedidos.routes.js'
 import FavoritosRoutes from './routes/Favoritos.routes.js'
 import OfertasRoutes from './routes/Ofertas.routes.js'
+
 import SuscripcionRoutes from './routes/suscripciones.routes.js'
+import StripeRoutes from './routes/Stripe.routes.js';
+
 
 const app = express();
+dotenv.config();
+
 
 app.use(cors({
     origin: ['https://robopits.online','https://www.robopits.online','http://localhost:3000'],
@@ -28,6 +35,7 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
@@ -43,6 +51,8 @@ app.use("/api", PedidoRoutes);
 app.use("/api", HistorialPedidos);
 app.use('/api', FavoritosRoutes);
 app.use("/api", OfertasRoutes);
+
 app.use("/api", SuscripcionRoutes);
+app.use('/api', StripeRoutes);
 
 export default app;
