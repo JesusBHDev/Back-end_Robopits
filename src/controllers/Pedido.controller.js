@@ -148,7 +148,6 @@ export const actualizarPedido = async (req, res) => {
   }
 };
 
-
 export const eliminarPedido = async (req, res) => {
   
   try {

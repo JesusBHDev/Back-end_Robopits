@@ -1,5 +1,4 @@
 // src/controllers/suscripcion.controller.js
-
 import mongoose from 'mongoose';  // Asegúrate de importar mongoose
 import Suscripcion from '../models/Suscripcion.model.js'; // Importa el modelo de suscripciones
 
