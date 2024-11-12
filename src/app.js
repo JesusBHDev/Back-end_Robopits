@@ -12,6 +12,7 @@ import PedidoRoutes from  './routes/pedido.routes.js';
 import HistorialPedidos from './routes/HistorialPedidos.routes.js'
 import FavoritosRoutes from './routes/Favoritos.routes.js'
 import OfertasRoutes from './routes/Ofertas.routes.js'
+import SuscripcionRoutes from './routes/suscripciones.routes.js'
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
     res.send("<h1>Hola Mundo desde Express!</h1>");
 });
 
+
 app.use("/api", authRoutes);
 app.use("/api", empleadosRoutes);
 app.use("/api", categoriaRoutes);
@@ -41,5 +43,6 @@ app.use("/api", PedidoRoutes);
 app.use("/api", HistorialPedidos);
 app.use('/api', FavoritosRoutes);
 app.use("/api", OfertasRoutes);
+app.use("/api", SuscripcionRoutes);
 
 export default app;

@@ -2,6 +2,8 @@
 import Pedido from '../models/Pedido.model.js'; // Asegúrate de que la ruta sea correcta
 import Carro from '../models/Carro.model.js';
 import User from '../models/user.model.js';
+import { enviarNotificacion } from '../config/notificaciones.js'; // Asegúrate de que la ruta sea correcta
+import Suscripcion from '../models/Suscripcion.model.js';
 
 // Función para crear un nuevo pedido
 export const crearPedido = async (req, res) => {
@@ -109,21 +111,42 @@ export const obtenerPedidosListos = async (req, res) => {
   }
 };
 
+// Función para actualizar el pedido y enviar notificación si el pedido está listo
 export const actualizarPedido = async (req, res) => {
   const { id } = req.params;
   const { descuento, puntoDeRetiro, estado } = req.body;
 
   try {
+    // Busca el pedido en la base de datos
     const pedido = await Pedido.findById(id);
     if (!pedido) {
       return res.status(404).json({ message: "Pedido no encontrado" });
     }
 
+    // Actualiza los datos del pedido
     pedido.descuento = descuento !== undefined ? descuento : pedido.descuento;
     pedido.puntoDeRetiro = puntoDeRetiro || pedido.puntoDeRetiro;
     pedido.estado = estado || pedido.estado;
-
     await pedido.save();
+
+    // Enviar notificación si el estado del pedido es "Listo"
+    if (estado === "Listo") {
+      // Buscar la suscripción del usuario
+      const suscripcion = await Suscripcion.findOne({ userId: pedido.cliente.id });
+      
+      if (suscripcion) {
+        // Preparar el contenido de la notificación
+        const payload = JSON.stringify({
+          title: "Pedido Listo",
+          body: "¡Tu pedido está listo para ser recogido!",
+          url: "http://localhost:3000/Pedidos"  // Cambia la URL según sea necesario
+        });
+
+        // Llama a la función para enviar la notificación
+        enviarNotificacion(suscripcion.subscription, payload);
+      }
+    }
+
     res.status(200).json({ message: "Pedido actualizado correctamente", pedido });
   } catch (error) {
     res.status(500).json({ message: "Error al actualizar el pedido", error });
