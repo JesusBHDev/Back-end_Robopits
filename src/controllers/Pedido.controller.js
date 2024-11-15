@@ -136,7 +136,7 @@ export const actualizarPedido = async (req, res) => {
         title: "Pedido Listo",
         body: "¡Tu pedido está listo para ser recogido!",
         icon: "https://moscu.s3.us-east-1.amazonaws.com/Imagenes/robopits-192x192.png", // Icono pequeño (campana)
-        badge: "https://moscu.s3.us-east-1.amazonaws.com/Imagenes/robob.webp", // Icono grande (imagen de perfil o avatar)
+        badge: "https://moscu.s3.us-east-1.amazonaws.com/Imagenes/robot.png", // Icono grande (imagen de perfil o avatar)
         url: "https://www.robopits.online/Pedidos" // URL de la notificación
     });
 
