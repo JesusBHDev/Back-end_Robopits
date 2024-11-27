@@ -7,6 +7,7 @@ import nodemailer from 'nodemailer';
 import { createAccessToken } from '../libs/jwt.js'
 import { TOKEN_SECRET } from "../config.js";
 import dotenv from 'dotenv'
+import { uploadFile, deleteFile } from "../../util/uploadFile.js";
 
 export const register = async (req, res) => {
     const {Nombre, Email, Password} = req.body
@@ -147,7 +148,7 @@ export const forgorPassword = async (req, res, next) =>{
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
         // Crear un token único con una expiración de 2 minutos
-        const token = jwt.sign({ userId: user._id }, TOKEN_SECRET, { expiresIn: '2m' });
+        const token = jwt.sign({ userId: user._id }, TOKEN_SECRET, { expiresIn: '10m' });
 
         dotenv.config()
         // Configurar nodemailer para enviar el correo electrónico
