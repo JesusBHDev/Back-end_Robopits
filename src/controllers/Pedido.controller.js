@@ -7,7 +7,7 @@ import Suscripcion from '../models/Suscripcion.model.js';
 
 // Función para crear un nuevo pedido
 export const crearPedido = async (req, res) => {
-  const { userId, direccion, descuento } = req.body;
+  const { userId, direccion, descuento, pago } = req.body;
 
   try {
     const usuario = await User.findById(userId);
@@ -40,7 +40,8 @@ export const crearPedido = async (req, res) => {
       total: total,
       direccion: direccion,
       puntoDeRetiro: "Pendiente", // Se actualizará más tarde por el administrador
-      estado: "Pendiente"
+      estado: "Pendiente",
+      pago: pago
     });
 
     await nuevoPedido.save();

@@ -11,8 +11,6 @@ export const obtenerProductos = async (req, res) => {
   }
 };
 
-
-
 export const obtenerProductosPorCategoria = async (req, res) => {
   try {
       const { categoriaId } = req.params; // Obtén el ID de la categoría desde el parámetro de la URL

@@ -65,6 +65,11 @@ const PedidoSchema = new Schema({
     enum: ['Pendiente', 'En preparacion', 'Listo', 'Cancelado'],
     default: 'Pendiente'
   },
+  pago: {
+    type: String,
+    enum: ['Pendiente', 'Pagado'],
+    default: 'Pendiente'
+  },
   pedidoId: {
     type: Number,
     unique: true
