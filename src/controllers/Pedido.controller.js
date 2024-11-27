@@ -136,9 +136,10 @@ export const actualizarPedido = async (req, res) => {
       const payload = JSON.stringify({
         title: "Pedido Listo",
         body: "¡Tu pedido está listo para ser recogido!",
-        icon:"https://www.robopits.online/images/robopits-pequeno.webp",
-        url: "https://www.robopits.online/Pedidos"  // Cambia la URL según sea necesario
-      });
+        icon: "https://moscu.s3.us-east-1.amazonaws.com/Imagenes/robopits-192x192.png", // Icono pequeño (campana)
+        image: "https://moscu.s3.us-east-1.amazonaws.com/Imagenes/robot.png", // Icono grande (imagen de perfil o avatar)
+        url: "https://www.robopits.online/Pedidos" // URL de la notificación
+    });
 
       // Llama a la función para enviar la notificación usando el userId
       enviarNotificacion(pedido.cliente.id, payload);
